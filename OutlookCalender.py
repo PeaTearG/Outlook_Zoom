@@ -60,13 +60,17 @@ def zoomparse(msgbody):
     return zoomurl
 
 def getTodayCal():
-    outlook = win32com.client.Dispatch("Outlook.Application")
+    outlook = win32com.client.Dispatch("Outlook.Application").Session.GetDefaultFolder(9)
     ns = outlook.Session
-    myCalendar = ns.GetDefaultFolder(9)
+#    myCalendar = ns.GetDefaultFolder(9)
+    myCalendar = outlook
     items = myCalendar.Items
     begin = datetime.date.today()
-    end = begin + datetime.timedelta(days=1)
-    restriction= "[Start] >= '" + begin.strftime("%m/%d/%Y") + "' AND [End] <= '" +end.strftime("%m/%d/%Y") + "'"
+#    begin = datetime.datetime.now()
+    end = datetime.date.today() + datetime.timedelta(hours=24)
+    print("\n Today's calendar begins on {} and ends on {}\n".format(begin.strftime("%m/%d/%Y %H:%M:%S"), end.strftime("%m/%d/%Y %H:%M:%S")))
+    restriction= "[Start] >= '" + begin.strftime("%m/%d/%Y %H:%M %p") + "' AND [End] <= '" +end.strftime("%m/%d/%Y %H:%M %p") + "'"
+    #restriction= "[Start] >= '" + begin.strftime("%m/%d/%Y") + "' AND [End] <= '" +end.strftime("%m/%d/%Y") + "'"
     restrictedItems = items.Restrict(restriction)
     return restrictedItems
 
@@ -75,10 +79,19 @@ Meetings = []
 
 for appointmentItem in todaysCalEvents:
     meeting_dict = {}
-    if appointmentItem.Subject.startswith("Canceled:"):
+    subject = appointmentItem.Subject
+#    app
+    body = appointmentItem.Body
+    tempappend = subject + body
+    if 'zoom' not in tempappend:
+        pass
+    elif appointmentItem.MeetingStatus == 7:
+        pass
+    elif appointmentItem.MeetingStatus == 0:
+        pass
+    elif appointmentItem.MeetingStatus == 5:
         pass
     else: # 'zoom' in appointmentItem.Body:
-        subject = appointmentItem.Subject
 #        print(subject)
 #        print(appointmentItem.Body)
         url = zoomparse(appointmentItem.Body)

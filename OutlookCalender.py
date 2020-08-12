@@ -99,19 +99,27 @@ for appointmentItem in todaysCalEvents:
         meeting_dict = {'subject': subject, 'meetingurl': url}
         Meetings.append(meeting_dict)
 
-index = 0
-for meeting in Meetings:
-    if meeting['meetingurl']:
-        print('Index No. ' + str(index) + ' ' + meeting['subject'])
+loop = True
+while loop:
+    index = 0
+    for meeting in Meetings:
+        if meeting['meetingurl']:
+            print('Index No. ' + str(index) + ' ' + meeting['subject'])
+        else:
+            pass
+        index = index + 1
+    meetingindextojoin = input('Enter meeting index you want to join\n')
+    try:
+        meetingindextojoin = int(meetingindextojoin)
+    except:
+        print(meetingindextojoin + " is not an integer, quitting")
+        break
+    print('Would you like to join the following meeting:\n' + Meetings[meetingindextojoin]['meetingurl'])
+    response = input('Yes or No\n')
+    if response == 'Yes':
+        webbrowser.open(Meetings[meetingindextojoin]['meetingurl'])
+        print(Meetings[meetingindextojoin]['meetingurl'])
+    elif response.lower() != "no":
+        loop = False
     else:
         pass
-    index = index + 1
-meetingindextojoin = int(input('Enter meeting index you want to join\n'))
-
-print('Would you like to join the following meeting:\n' + Meetings[meetingindextojoin]['meetingurl'])
-response = input('Yes or No\n')
-if response == 'Yes':
-    webbrowser.open(Meetings[meetingindextojoin]['meetingurl'])
-    print(Meetings[meetingindextojoin]['meetingurl'])
-else:
-    pass
